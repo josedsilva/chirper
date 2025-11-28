@@ -24,6 +24,11 @@
         </div>
     </nav>
 
+   {{-- Flash message --}}
+    @if (session('toast'))
+      <x-toast :type="session('toast.type')" :message="session('toast.message')" />
+    @endif
+
     <main class="flex-1 container mx-auto px-4 py-8">
       {{ $slot }}
     </main>
