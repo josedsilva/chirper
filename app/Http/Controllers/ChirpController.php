@@ -22,14 +22,6 @@ class ChirpController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -55,34 +47,47 @@ class ChirpController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Chirp $chirp)
     {
-        //
+        return view('chirps.edit', compact('chirp'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Chirp $chirp)
     {
-        //
+        $validated = $request->validate([
+            'chirp' => 'required|string|max:255|min:5',
+        ], [
+            'chirp.required' => 'Please write something to chirp!',
+            'chirp.max' => 'Chirps must be 255 characters or less.',
+            'chirp.min' => 'Chirps must be at least 5 characters.',
+        ]);
+        
+        $chirp->update([
+            'message' => $validated['chirp'],
+        ]);
+        
+        // Redirect back to the feed with flashed data
+        return redirect('/')->with('toast', [
+            'type' => 'success',
+            'message' => 'Your chirp was updated!',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Chirp $chirp)
     {
-        //
+        $chirp->delete();
+        
+        return redirect('/')->with('toast', [
+            'type' => 'success',
+            'message' => 'Your chirp was deleted!',
+        ]);
     }
 }
