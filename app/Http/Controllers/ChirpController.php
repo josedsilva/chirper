@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Chirp;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ChirpController extends Controller
 {
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
@@ -34,8 +37,8 @@ class ChirpController extends Controller
             'chirp.min' => 'Chirps must be at least 5 characters.',
         ]);
         
-        // create this chirp for a random author for now until auth is implemented.
-        User::inRandomOrder()->first()->chirps()->create([
+        // create this chirp on the authenticated user
+        auth()->user()->chirps()->create([
             'message' => $validated['chirp'],
         ]);
         
@@ -51,6 +54,8 @@ class ChirpController extends Controller
      */
     public function edit(Chirp $chirp)
     {
+        $this->authorize('update', $chirp);
+        
         return view('chirps.edit', compact('chirp'));
     }
 
@@ -59,6 +64,8 @@ class ChirpController extends Controller
      */
     public function update(Request $request, Chirp $chirp)
     {
+        $this->authorize('update', $chirp);
+        
         $validated = $request->validate([
             'chirp' => 'required|string|max:255|min:5',
         ], [
@@ -83,6 +90,8 @@ class ChirpController extends Controller
      */
     public function destroy(Chirp $chirp)
     {
+        $this->authorize('delete', $chirp);
+        
         $chirp->delete();
         
         return redirect('/')->with('toast', [

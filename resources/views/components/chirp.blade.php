@@ -25,10 +25,15 @@
                         @endif
                     </div>
 
+                    @canany(['update', 'delete'], $chirp)
                     <div class="flex gap-1">
+                        @can('update', $chirp)
                         <a href="/chirps/{{ $chirp->id }}/edit" class="btn btn-ghost btn-xs">
                             Edit
                         </a>
+                        @endcan
+                        
+                        @can('delete', $chirp)
                         <form method="POST" action="/chirps/{{ $chirp->id }}">
                             @csrf
                             @method('DELETE')
@@ -38,7 +43,9 @@
                                 Delete
                             </button>
                         </form>
+                        @endcan
                     </div>
+                    @endcanany
                 </div>
                 <p class="mt-1">{{ $chirp->message }}</p>
             </div>

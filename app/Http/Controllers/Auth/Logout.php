@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class Logout extends Controller
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function __invoke(Request $request)
+    {
+        Auth::logout();
+        
+        // Invalidate session
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')
+            ->with('toast', [
+                'type' => 'success',
+                'message' => 'You have been logged out.',
+            ]);
+    }
+}
