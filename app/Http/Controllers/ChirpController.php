@@ -21,7 +21,7 @@ class ChirpController extends Controller
             ->take(10)
             ->get();
         
-        return view('home', ['chirps' => $chirps]);
+        return view('home', compact('chirps'));
     }
 
     /**
